@@ -38,6 +38,7 @@ namespace MultiThreading
             cap1.Add("browserVersion", "103.0");
             cap1.Add("os", "Windows");
             cap1.Add("osVersion", "11");
+            //cap1.Add("debug", "true");
             Dictionary<string, object> cap2 = new Dictionary<string, object>();
             cap2.Add("browserName", "firefox");
             cap2.Add("browserVersion", "102.0");
