@@ -46,9 +46,7 @@ namespace MultiThreading
             //Executing the methods
             t1.Start();
 
-
             t1.Join();
-
 
         }
         static void sampleTestCase(Dictionary<string, object> cap)
