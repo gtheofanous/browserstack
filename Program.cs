@@ -37,29 +37,19 @@ namespace MultiThreading
             cap1.Add("browserName", "chrome");
             cap1.Add("browserVersion", "103.0");
             cap1.Add("os", "Windows");
-            cap1.Add("osVersion", "11");
-            //cap1.Add("debug", "true");
-            Dictionary<string, object> cap2 = new Dictionary<string, object>();
-            cap2.Add("browserName", "firefox");
-            cap2.Add("browserVersion", "102.0");
-            cap2.Add("os", "Windows");
-            cap2.Add("osVersion", "10");
-            Dictionary<string, object> cap3 = new Dictionary<string, object>();
-            cap3.Add("browserName", "safari");
-            cap3.Add("browserVersion", "14.1");
-            cap3.Add("os", "OS X");
-            cap3.Add("osVersion", "Big Sur");
+            cap1.Add("osVersion", "10");
+
             //Creating Threads and defining the browser and OS combinations where the test will run
             Thread t1 = new Thread(obj => sampleTestCase(cap1));
-            Thread t2 = new Thread(obj => sampleTestCase(cap2));
-            Thread t3 = new Thread(obj => sampleTestCase(cap3));
+            Thread t2 = new Thread(obj => executeTestWithCaps2(cap1));
+
             //Executing the methods
             t1.Start();
-            t2.Start();
-            t3.Start();
+
+
             t1.Join();
-            t2.Join();
-            t3.Join();
+
+
         }
         static void sampleTestCase(Dictionary<string, object> cap)
         {
@@ -97,5 +87,40 @@ namespace MultiThreading
             Console.WriteLine(driver.Title);
             driver.Quit();
         }
+        static void executeTestWithCaps2(DriverOptions capability)
+        {
+            IWebDriver driver = new RemoteWebDriver(new Uri("https://hub.browserstack.com/wd/hub/"), capability);
+            try
+            {
+                driver.Navigate().GoToUrl("https://www.duckduckgo.com");
+                IWebElement query = driver.FindElement(By.Id("logo_homepage_link"));
+                var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
+                query.Text.Contains("About DuckDuckGo");
+            }
+            catch (WebDriverTimeoutException)
+            {
+                ((IJavaScriptExecutor)driver).ExecuteScript("browserstack_executor: {\"action\": \"setSessionStatus\", \"arguments\": {\"status\":\"failed\", \"reason\": \" Title not matched \"}}");
+            }
+            Console.WriteLine(driver.Title);
+            driver.Quit();
+        }
+        static void executeTestWithCaps3(DriverOptions capability)
+        {
+            IWebDriver driver = new RemoteWebDriver(new Uri("https://hub.browserstack.com/wd/hub/"), capability);
+            try
+            {
+                driver.Navigate().GoToUrl("https://www.duckduckgo.com");
+                IWebElement query = driver.FindElement(By.ClassName("badge-link__title"));
+                var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
+                query.Text.Contains("Tired of being tracked online? ");
+            }
+            catch (WebDriverTimeoutException)
+            {
+                ((IJavaScriptExecutor)driver).ExecuteScript("browserstack_executor: {\"action\": \"setSessionStatus\", \"arguments\": {\"status\":\"failed\", \"reason\": \" Title not matched \"}}");
+            }
+            Console.WriteLine(driver.Title);
+            driver.Quit();
+        }
     }
+
 }
